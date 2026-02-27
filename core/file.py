@@ -153,10 +153,11 @@ class FileManager(object):
             if not found:
                 raise ValueError(f"File '{p}' not found in group '{group}'")
 
-    def collect_file(self, group: str):
+    def collect_file(self, group: str, suffix: str = None):
         """!
         根据组的根目录，添加目录中所有文件。仅包括第一层文件
         @param group 文件组名称
+        @param suffix 文件后缀，可选
         @throws ValueError 当文件组不存在或不是文件夹类型时抛出异常
         """
         if group not in self._groups:
@@ -167,10 +168,10 @@ class FileManager(object):
             raise ValueError(f"Group '{group}' is not a folder, cannot collect files")
 
         # 收集第一层文件
-        file_paths = []
-        for item in target_group.group_path.iterdir():
-            if item.is_file():
-                file_paths.append(item)
+        file_paths = [
+            item for item in target_group.group_path.iterdir()
+            if item.is_file() and (not suffix or item.suffix.lower() == suffix)
+        ]
 
         # 使用 create_file 添加文件（会处理去重和排序）
         if file_paths:
