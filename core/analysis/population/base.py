@@ -25,7 +25,7 @@ class PopulationAnalysisBase(KeyExtractionMixin, ABC):
         """!
         @brief 初始化人口分析器
         """
-        self.population = Map[RegionPopulation]()
+        self.population: Map[RegionPopulation] = Map()
         logger.info("Population analysis base initialized")
 
 
