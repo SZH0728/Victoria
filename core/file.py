@@ -5,6 +5,9 @@ from typing import Iterable, Iterator
 from enum import Enum
 from dataclasses import dataclass, field
 from pathlib import Path
+from logging import getLogger
+
+logger = getLogger(__name__)
 
 
 class GroupType(Enum):
@@ -46,7 +49,9 @@ class FileManager(object):
         @param path 文件组路径
         @throws ValueError 当文件组已存在时抛出异常
         """
+        logger.debug(f"Creating group '{name}' at path {path}")
         if name in self._groups:
+            logger.error(f"Group '{name}' already exists")
             raise ValueError(f"Group '{name}' already exists")
 
         path = Path(path)
@@ -60,6 +65,7 @@ class FileManager(object):
             group_type=group_type,
             group_path=path
         )
+        logger.info(f"Group '{name}' created successfully (type: {group_type})")
 
     def delete_group(self, name: str):
         """!
@@ -67,9 +73,12 @@ class FileManager(object):
         @param name 文件组名称
         @throws ValueError 当文件组不存在时抛出异常
         """
+        logger.debug(f"Deleting group '{name}'")
         if name not in self._groups:
+            logger.error(f"Group '{name}' does not exist")
             raise ValueError(f"Group '{name}' does not exist")
         del self._groups[name]
+        logger.info(f"Group '{name}' deleted successfully")
     
     @staticmethod
     def _normalize_paths(path: str | Path | Iterable[str] | Iterable[Path]) -> list[Path]:
@@ -93,7 +102,9 @@ class FileManager(object):
         @param path 文件路径，可以是字符串、Path对象或可迭代对象
         @throws ValueError 当文件组不存在或路径不在组根目录下时抛出异常
         """
+        logger.debug(f"Adding file(s) to group '{group}': {path}")
         if group not in self._groups:
+            logger.error(f"Group '{group}' does not exist")
             raise ValueError(f"Group '{group}' does not exist")
 
         target_group = self._groups[group]
@@ -104,6 +115,7 @@ class FileManager(object):
         for p in paths:
             # 检查路径是否在组路径下
             if not p.is_relative_to(target_group.group_path):
+                logger.error(f"Path '{p}' is not under group root '{target_group.group_path}'")
                 raise ValueError(f"Path '{p}' is not under group root '{target_group.group_path}'")
 
             # 创建 GroupItem
@@ -117,9 +129,13 @@ class FileManager(object):
             # 避免重复添加
             if not any(i.file_path == p for i in target_group.file_list):
                 target_group.file_list.append(item)
+                logger.debug(f"File '{p}' added to group '{group}'")
+            else:
+                logger.debug(f"File '{p}' already exists in group '{group}', skipped")
 
         # 按文件名排序
         target_group.file_list.sort(key=lambda x: x.file_name)
+        logger.info(f"File addition to group '{group}' completed. Total files in group: {len(target_group.file_list)}")
 
     def delete_file(self, group: str, path: str | Path | Iterable[str] | Iterable[Path]):
         """!
@@ -129,7 +145,9 @@ class FileManager(object):
         @param path 文件路径，可以是字符串、Path对象或可迭代对象
         @throws ValueError 当文件组不存在或文件未找到时抛出异常
         """
+        logger.debug(f"Deleting file(s) from group '{group}': {path}")
         if group not in self._groups:
+            logger.error(f"Group '{group}' does not exist")
             raise ValueError(f"Group '{group}' does not exist")
 
         target_group = self._groups[group]
@@ -141,6 +159,7 @@ class FileManager(object):
             for item in target_group.file_list:
                 if item.file_path == p:
                     target_group.file_list.remove(item)
+                    logger.debug(f"File '{p}' removed from group '{group}' (by path)")
                     found = True
                     break
             # 如果未找到且 p 是纯文件名（无目录部分），尝试匹配 file_name
@@ -148,10 +167,13 @@ class FileManager(object):
                 for item in target_group.file_list:
                     if item.file_name == p.name:
                         target_group.file_list.remove(item)
+                        logger.debug(f"File '{p.name}' removed from group '{group}' (by name)")
                         found = True
                         break
             if not found:
+                logger.error(f"File '{p}' not found in group '{group}'")
                 raise ValueError(f"File '{p}' not found in group '{group}'")
+        logger.info(f"File deletion from group '{group}' completed. Remaining files in group: {len(target_group.file_list)}")
 
     def collect_file(self, group: str, suffix: str = None):
         """!
@@ -160,11 +182,14 @@ class FileManager(object):
         @param suffix 文件后缀，可选
         @throws ValueError 当文件组不存在或不是文件夹类型时抛出异常
         """
+        logger.debug(f"Collecting files in group '{group}' with suffix '{suffix}'")
         if group not in self._groups:
+            logger.error(f"Group '{group}' does not exist")
             raise ValueError(f"Group '{group}' does not exist")
 
         target_group = self._groups[group]
         if target_group.group_type != GroupType.Folder:
+            logger.error(f"Group '{group}' is not a folder, cannot collect files")
             raise ValueError(f"Group '{group}' is not a folder, cannot collect files")
 
         # 收集第一层文件
@@ -176,6 +201,9 @@ class FileManager(object):
         # 使用 create_file 添加文件（会处理去重和排序）
         if file_paths:
             self.create_file(group, file_paths)
+            logger.info(f"Collected {len(file_paths)} file(s) from directory '{target_group.group_path}'")
+        else:
+            logger.warning(f"No files found in directory '{target_group.group_path}' with suffix '{suffix}'")
 
     def read_file(self, group: str, path: str | Path) -> str:
         """!

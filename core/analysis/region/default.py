@@ -7,9 +7,14 @@
 @details 提供基于pyradox树解析的具体区域分析实现
 """
 
+from logging import getLogger
+
 from pyradox import Tree
 
-from core.analysis.region.base import RegionAnalysisBase, RegionItem
+from core.datatype import RegionItem
+from core.analysis.region.base import RegionAnalysisBase
+
+logger = getLogger(__name__)
 
 
 class RegionAnalysisDefault(RegionAnalysisBase):
@@ -43,6 +48,8 @@ class RegionAnalysisDefault(RegionAnalysisBase):
                     map_color.append(value)
                 elif key == 'states':
                     states.append(value)
+                else:
+                    logger.warning(f"Unknown key '{key}' in region '{region_name}'")
 
             region_item = RegionItem(
                 region_name=region_name,
