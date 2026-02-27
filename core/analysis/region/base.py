@@ -15,15 +15,20 @@ from pyradox import Tree, parse
 
 from core.file import FileManager
 from core.datatype import Region, RegionItem
+from core.analysis.extract import KeyExtractionMixin
 
 logger = getLogger(__name__)
 
 
-class RegionAnalysisBase(ABC):
+class RegionAnalysisBase(KeyExtractionMixin, ABC):
     """!
     @brief 区域分析抽象基类
     @details 提供区域分析的通用框架，子类需实现具体的分析逻辑
     """
+    STATE_KEY_PREFIX = 'STATE_'
+    REGION_KEY_PREFIX = 'region_'
+    CONTINENT_FILE_SUFFIXES = ('.txt', '_strategic_regions')
+
     def __init__(self):
         """!
         @brief 初始化区域分析器
@@ -31,38 +36,15 @@ class RegionAnalysisBase(ABC):
         self.region = Region()  #!< 区域数据容器
         logger.info("Region analysis base initialized")
 
-    @staticmethod
-    def get_continent_name_by_file_name(name: str | Path) -> str:
-        """!
-        @brief 根据文件名提取大洲名称
-        @details 去除文件名中的'.txt'后缀和'_strategic_regions'后缀
-        @param name 文件名或Path对象
-        @return 大洲名称
-        """
-        if isinstance(name, Path):
-            name = name.name
-
-        name = name.replace('.txt', '')
-
-        return name.replace('_strategic_regions', '')
-
-    @staticmethod
-    def get_region_name_by_key(name: str) -> str:
-        """!
-        @brief 根据区域键名提取区域名称
-        @details 去除区域键名中的'region_'前缀
-        @param name 区域键名
-        @return 区域名称
-        """
-        return name.replace('region_', '')
 
     @abstractmethod
-    def analysis(self, tree: Tree) -> list[RegionItem]:
+    def analysis(self, tree: Tree, region_name: str) -> RegionItem:
         """!
         @brief 分析战略区域树，提取区域项
-        @details 子类必须实现此方法，解析pyradox树结构并返回区域项列表
+        @details 子类必须实现此方法，解析pyradox树结构并返回区域项
         @param tree pyradox解析的树结构
-        @return 区域项列表
+        @param region_name 区域名称
+        @return 区域项
         """
         pass
 
@@ -75,15 +57,22 @@ class RegionAnalysisBase(ABC):
         @param group 文件组名称
         """
         logger.info(f"Starting region analysis for group '{group}'")
+
         for file_path, content in manager.read_files_in_range(group):
+            logger.debug(f"Processing file: {file_path}")
+            continent_name = self.get_continent_name_by_file_name(file_path)
+
+            logger.debug(f"Parsing content for continent '{continent_name}'")
             tree = parse(content)
-            region_items = self.analysis(tree)
-            if region_items:
-                logger.debug(f"Processed file {file_path.name}, extracted {len(region_items)} region items")
-                region_name = self.get_continent_name_by_file_name(file_path)
-                self.region[region_name].extend(region_items)
-            else:
-                logger.warning(f"No region items extracted from {file_path.name}")
+
+            logger.debug(f"Analyzing regions in continent '{continent_name}'")
+            for region_name, region_definition in tree.items():
+                region_name = self.get_region_name_by_key(region_name)
+                logger.debug(f"Analyzing region '{region_name}'")
+                region_item = self.analysis(region_definition, region_name)
+                self.region[continent_name].append(region_item)
+                logger.debug(f"Region '{region_name}' added to continent '{continent_name}'")
+
         logger.info(f"Completed region analysis for group '{group}'")
 
 if __name__ == '__main__':
