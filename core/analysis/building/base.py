@@ -26,7 +26,7 @@ class BuildingAnalysisBase(KeyExtractionMixin, ABC):
         """!
         @brief 初始化建筑分析器
         """
-        self.building = Map[StateBuilding]()
+        self.building: Map[StateBuilding] = Map()
         logger.info("Building analysis base initialized")
 
 
