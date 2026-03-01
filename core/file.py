@@ -1,6 +1,12 @@
 # -*- coding:utf-8 -*-
 # AUTHOR: Sun
 
+"""!
+@package core.file
+@brief 文件管理模块
+@details 提供游戏文件的分组管理、读写操作，统一使用utf-8-sig编码
+"""
+
 from typing import Iterable, Iterator
 from enum import Enum
 from dataclasses import dataclass, field
@@ -11,36 +17,49 @@ logger = getLogger(__name__)
 
 
 class GroupType(Enum):
-    """文件组类型枚举"""
-    File = 0
-    Folder = 1
+    """!
+    @brief 文件组类型枚举
+    """
+    File = 0    #!< 文件类型组（单个文件）
+    Folder = 1  #!< 文件夹类型组（多个文件）
 
 
 @dataclass
 class GroupItem(object):
-    """文件组项数据类"""
-    group_name: str
-    group_type: GroupType
+    """!
+    @brief 文件组项数据类
+    @details 存储单个文件在文件组中的信息
+    """
+    group_name: str                 #!< 所属文件组名称
+    group_type: GroupType           #!< 文件组类型
 
-    file_name: str
-    file_path: Path
+    file_name: str                  #!< 文件名
+    file_path: Path                 #!< 文件完整路径
 
 
 @dataclass
 class Group(object):
-    """文件组数据类"""
-    group_name: str
-    group_type: GroupType
-    group_path: Path
+    """!
+    @brief 文件组数据类
+    @details 存储文件组的完整信息，包括组内所有文件列表
+    """
+    group_name: str                 #!< 文件组名称
+    group_type: GroupType           #!< 文件组类型
+    group_path: Path                #!< 文件组路径
 
-    file_list: list[GroupItem] = field(default_factory=list)
+    file_list: list[GroupItem] = field(default_factory=list)  #!< 文件列表
 
 
 class FileManager(object):
-    """文件管理类，统一配置文件的读取与写入，均使用 utf-8-sig 编码"""
+    """!
+    @brief 文件管理类
+    @details 统一配置文件的读取与写入，均使用utf-8-sig编码，支持文件组管理
+    """
     def __init__(self):
-        """初始化文件管理器"""
-        self._groups: dict[str, Group] = {}
+        """!
+        @brief 初始化文件管理器
+        """
+        self._groups: dict[str, Group] = {}  #!< 文件组字典，键为组名，值为Group对象
 
     def create_group(self, name: str, path: Path):
         """!
@@ -218,17 +237,21 @@ class FileManager(object):
             raise ValueError(f"Group '{group}' does not exist")
 
         target_group = self._groups[group]
-        p = Path(path)
+
+        if isinstance(path, str):
+            for file in target_group.file_list:
+                if file.file_name == path:
+                    return file.file_path.read_text(encoding='utf-8-sig')
 
         # 验证文件属于组
-        if not any(item.file_path == p for item in target_group.file_list):
-            raise ValueError(f"File '{p}' not in group '{group}'")
+        if isinstance(path, Path) and not path.is_relative_to(target_group.group_path):
+            raise ValueError(f"File '{path}' not in group '{group}'")
 
         # 读取文件内容
         try:
-            return p.read_text(encoding='utf-8-sig')
+            return Path(path).read_text(encoding='utf-8-sig')
         except OSError as e:
-            raise IOError(f"Failed to read file '{p}': {e}")
+            raise IOError(f"Failed to read file '{path}': {e}")
 
     def read_files(self, group: str) -> list[str]:
         """!
@@ -283,7 +306,10 @@ class FileManager(object):
             raise ValueError(f"Group '{group}' does not exist")
 
         target_group = self._groups[group]
-        p = Path(path)
+        if isinstance(path, str):
+            p = target_group.group_path / path
+        else:
+            p = path
 
         # 检查路径是否在组路径下
         if not p.is_relative_to(target_group.group_path):
@@ -301,6 +327,18 @@ class FileManager(object):
             p.write_text(content, encoding='utf-8-sig')
         except OSError as e:
             raise IOError(f"Failed to write file '{p}': {e}")
+
+    def list_file(self, group: str) -> list[Path]:
+        """!
+        列出组中的所有文件
+        @param group 文件组名称
+        @return 文件列表
+        @throws ValueError 当文件组不存在时抛出异常
+        """
+        if group not in self._groups:
+            raise ValueError(f"Group '{group}' does not exist")
+
+        return [item.file_path for item in self._groups[group].file_list]
 
 if __name__ == '__main__':
     pass
