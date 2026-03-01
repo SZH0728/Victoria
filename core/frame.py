@@ -617,7 +617,7 @@ if __name__ == '__main__':
 
     frame.set_modify(Modify.definition, 'generate')
     frame.set_args('enable_random_country_type', True)
-    frame.set_args('random_country_type_weight', [2, 3, 5])
+    frame.set_args('random_country_type_weight', [2, 5, 3])
     frame.set_args('set_fix_country_type', 'recognized')
 
     frame.main()
