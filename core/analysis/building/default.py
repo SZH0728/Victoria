@@ -28,8 +28,11 @@ class BuildingAnalysisDefault(BuildingAnalysisBase):
         level: int = 0
 
         for key, value in tree.items():
+            if isinstance(value, Tree):
+                value = str(value)
+
             if key == 'country':
-                country = self.get_country_tag_by_value(value)
+                country = self.extract_country_tag_from_value(value)
             elif key == 'levels':
                 level = value
             else:
@@ -56,10 +59,13 @@ class BuildingAnalysisDefault(BuildingAnalysisBase):
         region: str = ''
 
         for key, value in tree.items():
+            if isinstance(value, Tree):
+                value = str(value)
+
             if key == 'type':
                 building = value
             elif key == 'country':
-                country = self.get_country_tag_by_value(value)
+                country = self.extract_country_tag_from_value(value)
             elif key == 'levels':
                 level = value
             elif key == 'region':
@@ -89,10 +95,13 @@ class BuildingAnalysisDefault(BuildingAnalysisBase):
         level: int = 0
 
         for key, value in tree.items():
+            if isinstance(value, Tree):
+                value = str(value)
+
             if key == 'type':
                 company = value
             elif key == 'country':
-                country = self.get_country_tag_by_value(value)
+                country = self.extract_country_tag_from_value(value)
             elif key == 'levels':
                 level = value
             else:
@@ -125,7 +134,10 @@ class BuildingAnalysisDefault(BuildingAnalysisBase):
             elif key == 'company':
                 ownership.append(self.analysis_company_ownership(value))
             else:
-                logger.warning(f"Unknown key '{key}' in building ownership")
+                if isinstance(value, Tree):
+                    logger.warning(f"Unknown key '{key}' in building ownership, value converted from Tree to string")
+                else:
+                    logger.warning(f"Unknown key '{key}' in building ownership")
 
         return ownership
 
@@ -145,17 +157,21 @@ class BuildingAnalysisDefault(BuildingAnalysisBase):
 
         for key, value in tree.items():
             if key == 'building':
-                building = value
+                building = str(value) if isinstance(value, Tree) else value
             elif key == 'add_ownership':
                 ownership.extend(self.analysis_ownership(value))
             elif key == 'subsidized':
-                subsidized = value
+                subsidized = str(value) if isinstance(value, Tree) else value
             elif key == 'reserves':
-                reserve = value
+                reserve = str(value) if isinstance(value, Tree) else value
             elif key == 'activate_production_methods':
-                methods.append(value)
+                methods.append(str(value) if isinstance(value, Tree) else value)
             else:
-                logger.warning(f"Unknown key '{key}' in building {building}")
+                # 如果值是Tree节点，转换为字符串
+                if isinstance(value, Tree):
+                    logger.warning(f"Unknown key '{key}' in building {building}, value converted from Tree to string")
+                else:
+                    logger.warning(f"Unknown key '{key}' in building {building}")
 
         logger.debug(f"Created building item for '{building}' with {len(ownership)} ownerships")
         building_item = BuildingItem(
@@ -180,11 +196,14 @@ class BuildingAnalysisDefault(BuildingAnalysisBase):
 
         for key, value in tree.items():
             if key == 'building':
-                building = value
+                building = str(value) if isinstance(value, Tree) else value
             elif key == 'level':
-                level = value
+                level = str(value) if isinstance(value, Tree) else value
             else:
-                logger.warning(f"Unknown key '{key}' in building {building}")
+                if isinstance(value, Tree):
+                    logger.warning(f"Unknown key '{key}' in building {building}, value converted from Tree to string")
+                else:
+                    logger.warning(f"Unknown key '{key}' in building {building}")
 
         logger.debug(f"Created no-owner building item for '{building}' with level {level}")
         building_item = BuildingNoOwnerItem(
@@ -214,7 +233,10 @@ class BuildingAnalysisDefault(BuildingAnalysisBase):
                 else:
                     buildings.append(self.analysis_building(value))
             else:
-                logger.warning(f"Unknown key '{key}' in country {tag}")
+                if isinstance(value, Tree):
+                    logger.warning(f"Unknown key '{key}' in country {tag}, value converted from Tree to string")
+                else:
+                    logger.warning(f"Unknown key '{key}' in country {tag}")
 
         logger.debug(f"Created country building for tag '{tag}' with {len(buildings)} buildings")
         country_building = CountryBuilding(
@@ -242,10 +264,13 @@ class BuildingAnalysisDefault(BuildingAnalysisBase):
 
         for key, value in tree.items():
             if key.startswith('region_state:'):
-                country_tag = self.get_country_tag_by_key(key)
+                country_tag = self.extract_country_tag_from_key(key)
                 country_building.append(self.analysis_country(value, country_tag))
             else:
-                logger.warning(f"Unknown key '{key}' in state {state_name}")
+                if isinstance(value, Tree):
+                    logger.warning(f"Unknown key '{key}' in state {state_name}, value converted from Tree to string")
+                else:
+                    logger.warning(f"Unknown key '{key}' in state {state_name}")
 
         logger.debug(f"Created state building for state '{state_name}' with {len(country_building)} countries")
         state_building = StateBuilding(
