@@ -612,7 +612,7 @@ if __name__ == '__main__':
 
     frame.set_modify(Modify.effect, 'randomize')
     frame.set_args('enable_random_technology', True)
-    frame.set_args('random_technology_range', (1, 1))
+    frame.set_args('random_technology_range', (6, 6))
     frame.set_args('enable_random_law', True)
 
     frame.set_modify(Modify.definition, 'generate')
