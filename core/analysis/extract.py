@@ -15,80 +15,101 @@ from pathlib import Path
 class KeyExtractionMixin:
     """!
     @brief 键提取混入类
-    @details 提供类方法，通过替换可配置的前缀/后缀从键中提取名称。
-             子类应设置类属性以匹配其特定的提取模式。
+    @details 提供类方法，通过硬编码的前缀/后缀从键中提取名称。
+             每种类型支持一组已知的前缀，自动匹配并移除。
     """
 
-    # Class attributes to be overridden by subclasses
-    STATE_KEY_PREFIX: ClassVar[str] = ''
-    COUNTRY_TAG_KEY_PREFIX: ClassVar[str] = ''
-    COUNTRY_TAG_VALUE_PREFIX: ClassVar[str] = ''
-    CULTURE_KEY_PREFIX: ClassVar[str] = ''
-    REGION_KEY_PREFIX: ClassVar[str] = ''
-    CONTINENT_FILE_SUFFIXES: ClassVar[tuple[str, ...]] = ('.txt', '_strategic_regions')
 
     @classmethod
-    def get_state_name_by_key(cls, name: str) -> str:
+    def extract_state_name_from_key(cls, name: str) -> str:
         """!
         @brief 从键中提取州名称，通过移除前缀
         @param name 原始键（例如 's:STATE_CALIFORNIA'）
         @return 小写的州名称
         """
-        result = name.replace(cls.STATE_KEY_PREFIX, '')
+        prefixes = ['s:STATE_', 'STATE_']
+        result = name
+
+        for prefix in prefixes:
+            if result.startswith(prefix):
+                result = result.replace(prefix, '', 1)
+                break
+
         return result.lower()
 
     @classmethod
-    def get_country_tag_by_key(cls, tag: str) -> str:
+    def extract_country_tag_from_key(cls, tag: str) -> str:
         """!
         @brief 从键中提取国家标签，通过移除前缀
         @param tag 原始键（例如 'region_state:USA'）
         @return 大写的国家标签
         """
-        result = tag.replace(cls.COUNTRY_TAG_KEY_PREFIX, '')
+        prefixes = ['c:', 'region_state:']
+        result = tag
+
+        for prefix in prefixes:
+            if result.startswith(prefix):
+                result = result.replace(prefix, '', 1)
+                break
+
         return result.upper()
 
     @classmethod
-    def get_country_tag_by_value(cls, tag: str) -> str:
+    def extract_country_tag_from_value(cls, tag: str) -> str:
         """!
         @brief 从值中提取国家标签，通过移除前缀
         @param tag 原始值（例如 'c:USA'）
         @return 大写的国家标签
         """
-        result = tag.replace(cls.COUNTRY_TAG_VALUE_PREFIX, '')
+        prefix = 'c:'
+        result = tag
+
+        if result.startswith(prefix):
+            result = result.replace(prefix, '', 1)
+
         return result.upper()
 
     @classmethod
-    def get_culture_name_by_key(cls, name: str) -> str:
+    def extract_culture_name_from_key(cls, name: str) -> str:
         """!
         @brief 从键中提取文化名称，通过移除前缀
         @param name 原始键（例如 'cu:english'）
         @return 小写的文化名称
         """
-        result = name.replace(cls.CULTURE_KEY_PREFIX, '')
+        prefix = 'cu:'
+        result = name
+
+        if result.startswith(prefix):
+            result = result.replace(prefix, '', 1)
+
         return result.lower()
 
     @classmethod
-    def get_region_name_by_key(cls, name: str) -> str:
+    def extract_region_name_from_key(cls, name: str) -> str:
         """!
         @brief 从键中提取区域名称，通过移除前缀
         @param name 原始键（例如 'region_europe'）
         @return 小写的区域名称
         """
-        result = name.replace(cls.REGION_KEY_PREFIX, '')
+        prefix = 'region_'
+        result = name
+
+        if result.startswith(prefix):
+            result = result.replace(prefix, '', 1)
+
         return result.lower()
 
     @classmethod
-    def get_continent_name_by_file_name(cls, name: str | Path) -> str:
+    def extract_continent_name_from_filename(cls, name: str | Path) -> str:
         """!
         @brief 从文件名中提取大洲名称，通过移除后缀
         @param name 文件名或路径对象
         @return 小写的大洲名称
         """
-        if isinstance(name, Path):
-            name = name.name
+        result = name.name if isinstance(name, Path) else name
+        suffixes = ('.txt', '_strategic_regions')
 
-        result = name
-        for suffix in cls.CONTINENT_FILE_SUFFIXES:
+        for suffix in suffixes:
             result = result.replace(suffix, '')
 
         return result.lower()
