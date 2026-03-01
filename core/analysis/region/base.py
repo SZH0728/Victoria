@@ -25,9 +25,6 @@ class RegionAnalysisBase(KeyExtractionMixin, ABC):
     @brief 区域分析抽象基类
     @details 提供区域分析的通用框架，子类需实现具体的分析逻辑
     """
-    STATE_KEY_PREFIX = 'STATE_'
-    REGION_KEY_PREFIX = 'region_'
-    CONTINENT_FILE_SUFFIXES = ('.txt', '_strategic_regions')
 
     def __init__(self):
         """!
@@ -60,14 +57,14 @@ class RegionAnalysisBase(KeyExtractionMixin, ABC):
 
         for file_path, content in manager.read_files_in_range(group):
             logger.debug(f"Processing file: {file_path}")
-            continent_name = self.get_continent_name_by_file_name(file_path)
+            continent_name = self.extract_continent_name_from_filename(file_path)
 
             logger.debug(f"Parsing content for continent '{continent_name}'")
             tree = parse(content)
 
             logger.debug(f"Analyzing regions in continent '{continent_name}'")
             for region_name, region_definition in tree.items():
-                region_name = self.get_region_name_by_key(region_name)
+                region_name = self.extract_region_name_from_key(region_name)
                 logger.debug(f"Analyzing region '{region_name}'")
                 region_item = self.analysis(region_definition, region_name)
                 self.region[continent_name].append(region_item)
