@@ -18,8 +18,6 @@ class PopulationAnalysisBase(KeyExtractionMixin, ABC):
     @brief 人口分析抽象基类
     @details 提供人口分析的通用框架，子类需实现具体的分析逻辑
     """
-    STATE_KEY_PREFIX = 's:STATE_'
-    COUNTRY_TAG_KEY_PREFIX = 'region_state:'
 
     def __init__(self):
         """!
@@ -56,7 +54,7 @@ class PopulationAnalysisBase(KeyExtractionMixin, ABC):
 
             logger.debug(f"Analyzing populations in tree")
             for state_name, building_definition in tree['POPS'].items():
-                state_name = self.get_state_name_by_key(state_name)
+                state_name = self.extract_state_name_from_key(state_name)
                 logger.debug(f"Analyzing population for state '{state_name}'")
                 population = self.analysis(building_definition, state_name)
 
