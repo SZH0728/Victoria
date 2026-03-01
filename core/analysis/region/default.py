@@ -37,6 +37,9 @@ class RegionAnalysisDefault(RegionAnalysisBase):
         states: list[str] = []
 
         for key, value in tree.items():
+            if isinstance(value, Tree):
+                value = str(value)
+
             if key == 'graphical_culture':
                 graphical_culture = value
             elif key == 'capital_province':
@@ -44,7 +47,7 @@ class RegionAnalysisDefault(RegionAnalysisBase):
             elif key == 'map_color':
                 map_color.append(value)
             elif key == 'states':
-                states.append(self.get_state_name_by_key(value))
+                states.append(self.extract_state_name_from_key(value))
             else:
                 logger.warning(f"Unknown key '{key}' in region '{region_name}'")
 
