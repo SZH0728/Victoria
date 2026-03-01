@@ -30,8 +30,11 @@ class StateAnalysisDefault(StateAnalysisBase):
         state_type: str | None = None
 
         for key, value in tree.items():
+            if isinstance(value, Tree):
+                value = str(value)
+
             if key == 'country':
-                country_tag = self.get_country_tag_by_key(value)
+                country_tag = self.extract_country_tag_from_key(value)
             elif key == 'owned_provinces':
                 provinces.append(value)
             elif key == 'state_type':
@@ -67,11 +70,14 @@ class StateAnalysisDefault(StateAnalysisBase):
             if key == 'create_state':
                 country.append(self.analysis_country(value, state_name))
             elif key == 'add_homeland':
-                homeland.append(self.get_culture_name_by_key(value))
+                homeland.append(self.extract_culture_name_from_key(str(value) if isinstance(value, Tree) else value))
             elif key == 'add_claim':
-                claim.append(self.get_country_tag_by_key(value))
+                claim.append(self.extract_country_tag_from_key(str(value) if isinstance(value, Tree) else value))
             else:
-                logger.warning(f"Unknown key '{key}' in state '{state_name}'")
+                if isinstance(value, Tree):
+                    logger.warning(f"Unknown key '{key}' in state '{state_name}', value converted from Tree to string")
+                else:
+                    logger.warning(f"Unknown key '{key}' in state '{state_name}'")
 
         logger.debug(f"Created state '{state_name}' with {len(country)} countries")
         state = State(
