@@ -18,9 +18,6 @@ class StateAnalysisBase(KeyExtractionMixin, ABC):
     @brief 州分析抽象基类
     @details 提供州分析的通用框架，子类需实现具体的分析逻辑
     """
-    STATE_KEY_PREFIX = 's:STATE_'
-    COUNTRY_TAG_KEY_PREFIX = 'c:'
-    CULTURE_KEY_PREFIX = 'cu:'
 
     def __init__(self):
         """!
@@ -57,7 +54,7 @@ class StateAnalysisBase(KeyExtractionMixin, ABC):
 
             logger.debug(f"Analyzing states in tree")
             for state_name, state_definition in tree['STATES'].items():
-                state_name = self.get_state_name_by_key(state_name)
+                state_name = self.extract_state_name_from_key(state_name)
                 logger.debug(f"Analyzing state '{state_name}'")
                 state = self.analysis(state_definition, state_name)
 
