@@ -18,9 +18,6 @@ class BuildingAnalysisBase(KeyExtractionMixin, ABC):
     @brief 建筑分析抽象基类
     @details 提供建筑分析的通用框架，子类需实现具体的分析逻辑
     """
-    STATE_KEY_PREFIX = 's:STATE_'
-    COUNTRY_TAG_KEY_PREFIX = 'region_state:'
-    COUNTRY_TAG_VALUE_PREFIX = 'c:'
 
     def __init__(self):
         """!
@@ -57,7 +54,7 @@ class BuildingAnalysisBase(KeyExtractionMixin, ABC):
 
             logger.debug(f"Analyzing buildings in tree")
             for state_name, building_definition in tree['BUILDINGS'].items():
-                state_name = self.get_state_name_by_key(state_name)
+                state_name = self.extract_state_name_from_key(state_name)
                 logger.debug(f"Analyzing building for state '{state_name}'")
                 building = self.analysis(building_definition, state_name)
 
