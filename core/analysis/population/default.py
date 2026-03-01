@@ -31,6 +31,9 @@ class PopulationAnalysisDefault(PopulationAnalysisBase):
         population_type: str | None = None
 
         for key, value in tree.items():
+            if isinstance(value, Tree):
+                value = str(value)
+
             if key == 'size':
                 size = value
             elif key == 'culture':
@@ -66,7 +69,11 @@ class PopulationAnalysisDefault(PopulationAnalysisBase):
             if key == 'create_pop':
                 population.append(self.analysis_population(value))
             else:
-                logger.warning(f"Unknown key '{key}' in country {country_tag}")
+                # 如果值是Tree节点，转换为字符串
+                if isinstance(value, Tree):
+                    logger.warning(f"Unknown key '{key}' in country {country_tag}, value converted from Tree to string")
+                else:
+                    logger.warning(f"Unknown key '{key}' in country {country_tag}")
 
         logger.debug(f"Created country population for tag '{country_tag}' with {len(population)} population items")
         country_population = CountryPopulation(
@@ -89,10 +96,14 @@ class PopulationAnalysisDefault(PopulationAnalysisBase):
 
         for key, value in tree.items():
             if key.startswith('region_state:'):
-                country_tag = self.get_country_tag_by_key(key)
+                country_tag = self.extract_country_tag_from_key(key)
                 population.append(self.analysis_country(value, country_tag))
             else:
-                logger.warning(f"Unknown key '{key}' in state {state_name}")
+                # 如果值是Tree节点，转换为字符串
+                if isinstance(value, Tree):
+                    logger.warning(f"Unknown key '{key}' in state {state_name}, value converted from Tree to string")
+                else:
+                    logger.warning(f"Unknown key '{key}' in state {state_name}")
 
         logger.debug(f"Created region population for state '{state_name}' with {len(population)} countries")
         region_population = RegionPopulation(
