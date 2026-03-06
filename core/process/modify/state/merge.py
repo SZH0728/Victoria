@@ -143,6 +143,9 @@ class StateModifyRegionMerge(StateModifyBase):
 
                 max_merge: int = len(state_list) * max_merge_percent // 100
 
+                if max_merge == 0 and max_merge_percent > 0:
+                    max_merge = 1
+
                 group_state = self.random_group_states(state_list, max_merge)
                 group_states.extend(group_state)
 
