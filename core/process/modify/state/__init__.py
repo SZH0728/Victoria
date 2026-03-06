@@ -10,29 +10,30 @@
 from typing import Type
 
 from .base import StateModifyBase
-from .default import StateModifyDefault
 from .state import StateModifySingleStateCountry
 from .merge import StateModifyRegionMerge
+from .adjacent import StateModifyRegionAdjacent
 
 __all__ = [
     'StateModifyBase',
-    'StateModifyDefault',
     'StateModifySingleStateCountry',
     'StateModifyRegionMerge',
+    'StateModifyRegionAdjacent',
     'STATE_MODIFY_LIST',
     'STATE_MODIFY_DEPENDENCY',
 ]
 
 STATE_MODIFY_LIST: dict[str, Type[StateModifyBase]] = {
-    'default': StateModifyDefault,
     'single_state_country': StateModifySingleStateCountry,
     'region_merge_country': StateModifyRegionMerge,
+    'region_adjacent_country': StateModifyRegionAdjacent,
 }
 
 STATE_MODIFY_DEPENDENCY: dict[str, tuple[str, ...]] = {
     'default': (),
     'single_state_country': ('state_plot',),
     'region_merge_country': ('state_plot',),
+    'region_adjacent_country': ('state_in_region_order',),
 }
 
 if __name__ == '__main__':
