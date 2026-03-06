@@ -10,18 +10,15 @@
 from typing import Type
 
 from .base import BuildingModifyBase
-from .default import BuildingModifyDefault
 from .empty import BuildingModifyEmpty
 
 __all__ = [
     'BuildingModifyBase',
-    'BuildingModifyDefault',
     'BUILDING_MODIFY_LIST',
     'BUILDING_MODIFY_DEPENDENCY',
 ]
 
 BUILDING_MODIFY_LIST: dict[str, Type[BuildingModifyBase]] = {
-    'default': BuildingModifyDefault,
     'empty': BuildingModifyEmpty,
 }
 
