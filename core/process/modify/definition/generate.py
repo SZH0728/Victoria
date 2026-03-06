@@ -13,6 +13,7 @@ from random import randint, choices
 from core.datatype.map import Map
 from core.datatype.population import PopulationItem
 from core.datatype.definition import CountryDefinition
+from core.datatype.combination import DataGenerateType
 from core.process.modify.definition.base import DefinitionModifyBase
 
 
@@ -39,9 +40,18 @@ class DefinitionModifyGenerate(DefinitionModifyBase):
         population_item_map: Map[list[PopulationItem]] = Map()
         definition_map: Map[CountryDefinition] = Map()
 
-        enable_random_country_type = self.middle.get('enable_random_country_type', False)
-        random_country_weight = self.middle.get('random_country_type_weight', [2, 3, 5])
-        set_fix_country_type = self.middle.get('set_fix_country_type', 'unrecognized')
+        country_type_generate_function: DataGenerateType = self.middle.get('country_type_generate_function', DataGenerateType.default)
+        country_type_fix: str = self.middle.get('set_fix_country_type', 'recognized')
+        country_type_random_weight = self.middle.get('set_random_country_type_weight', [2, 3, 5])
+
+        main_culture_generate_function: DataGenerateType = self.middle.get('main_culture_generate_function', DataGenerateType.default)
+        main_culture_max_number: int = self.middle.get('set_main_culture_max_number', 1)
+        main_culture_fix: str = self.middle.get('set_fix_main_culture', None)
+
+        if main_culture_fix is None and main_culture_generate_function == DataGenerateType.fix:
+            raise ValueError('Invalid main_culture_fix')
+
+        enable_named_from_capital: bool = self.middle.get('enable_named_from_capital', None)
 
         for region_population in self.target.population.values():
             for country_population in region_population.population:
@@ -52,27 +62,47 @@ class DefinitionModifyGenerate(DefinitionModifyBase):
                         population_item_map[country_population.country_tag].append(population_item)
 
         for tag, population_item_list in population_item_map.items():
-            population_item_list.sort(key=lambda x: x.size, reverse=True)
-
             capital_region = self.middle['country_state'][tag][0]
 
-            country_type: list[str] = ['recognized', 'unrecognized', 'decentralized']
+            country_type: str = 'recognized'
+            if country_type_generate_function == DataGenerateType.default:
+                pass
+            elif country_type_generate_function == DataGenerateType.fix:
+                country_type = country_type_fix
+            elif country_type_generate_function == DataGenerateType.randomize:
+                country_type_list: list[str] = ['recognized', 'unrecognized', 'decentralized']
+                country_type = choices(country_type_list, weights=country_type_random_weight, k=1)[0]
+            else:
+                raise ValueError('Invalid country_type_generate_function')
 
-            country_type_target: str = set_fix_country_type
-            if enable_random_country_type:
-                country_type_target = choices(country_type, weights=random_country_weight, k=1)[0]
+            main_culture: list[str] = []
+            population_item_list.sort(key=lambda x: x.size, reverse=True)
+            if main_culture_generate_function == DataGenerateType.default:
+                for population_item in population_item_list:
+                    culture = population_item.culture
+                    if culture not in main_culture:
+                        main_culture.append(culture)
 
-            main_culture = population_item_list[0].culture
+                    if len(main_culture) >= main_culture_max_number:
+                        break
+            elif main_culture_generate_function == DataGenerateType.fix:
+                main_culture = [main_culture_fix]
+            elif main_culture_generate_function == DataGenerateType.randomize:
+                all_culture = set([population_item.culture for population_item in population_item_list])
+                main_culture = choices(list(all_culture), k=main_culture_max_number)
+            else:
+                raise ValueError('Invalid main_culture_generate_function')
+
             country_definition = CountryDefinition(
                 country_tag=tag,
                 color=(randint(50, 200), randint(50, 200), randint(50, 200)),
-                country_type=country_type_target,
+                country_type=country_type,
                 tier='empire',
-                culture=(main_culture,),
+                culture=tuple(main_culture),
                 capital=f'STATE_{capital_region.upper()}',
 
                 religion=None,
-                is_named_from_capital=None,
+                is_named_from_capital='yes' if enable_named_from_capital else None,
                 valid_as_home_country_for_separatists=None,
                 social_hierarchy=None,
                 unit_color=None
