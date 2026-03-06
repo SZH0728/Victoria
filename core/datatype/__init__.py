@@ -9,7 +9,7 @@
 
 from .map import Map
 from .region import RegionItem, Region
-from .state import CountryState, State, StatePlot, StateAdjacency
+from .state import CountryState, State, StatePlot
 from .building import (
     BuildingCountryOwnership,
     BuildingPrivateOwnership,
@@ -34,7 +34,6 @@ __all__ = [
     'CountryState',
     'State',
     'StatePlot',
-    'StateAdjacency',
     # 建筑相关
     'BuildingCountryOwnership',
     'BuildingPrivateOwnership',
