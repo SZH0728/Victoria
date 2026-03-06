@@ -13,7 +13,7 @@ from enum import Enum
 from pathlib import Path
 
 from core.analysis import RegionAnalysisBase, StateAnalysisBase, PopulationAnalysisBase, BuildingAnalysisBase, DefinitionAnalysisBase, EffectAnalysisBase
-from core.datatype import DataCombination
+from core.datatype.combination import DataCombination, DataGenerateType
 from core.file import FileManager
 
 from core.analysis.building import BUILDING_ANALYSIS_LIST
@@ -22,6 +22,7 @@ from core.analysis.effect import EFFECT_ANALYSIS_LIST
 from core.analysis.population import POPULATION_ANALYSIS_LIST
 from core.analysis.region import REGION_ANALYSIS_LIST
 from core.analysis.state import STATE_ANALYSIS_LIST
+from core.analysis.map import MapAnalysis
 from core.analysis.translate import TranslateAnalysis
 
 from core.process.collect import COLLECT_LIST, COLLECT_DEPENDENCY
@@ -108,34 +109,14 @@ class Frame(object):
         self._manager: FileManager | None = None
         self.reset_file_manager()
 
-        self._analysis_order: list[Any] = [
-            REGION_ANALYSIS_LIST['default'],
-            STATE_ANALYSIS_LIST['default'],
-            POPULATION_ANALYSIS_LIST['default'],
-            BUILDING_ANALYSIS_LIST['default'],
-            DEFINITION_ANALYSIS_LIST['default'],
-            EFFECT_ANALYSIS_LIST['default'],
-        ]
+        self._analysis_order: list[Any] = [None for _ in range(6)]
 
         self._collect_order: list[Any] = []
         self._exist_collect_name: set[str] = set()
 
-        self._modify_order: list[Any] = [
-            STATE_MODIFY_LIST['default'],
-            POPULATION_MODIFY_LIST['default'],
-            BUILDING_MODIFY_LIST['default'],
-            DEFINITION_MODIFY_LIST['default'],
-            EFFECT_MODIFY_LIST['default'],
-            TAG_MODIFY_LIST['default'],
-        ]
+        self._modify_order: list[Any] = [None for _ in range(6)]
 
-        self._transform_order: list[Any] = [
-            STATE_TRANSFORM_LIST['default'],
-            POPULATION_TRANSFORM_LIST['default'],
-            BUILDING_TRANSFORM_LIST['default'],
-            DEFINITION_TRANSFORM_LIST['default'],
-            EFFECT_TRANSFORM_LIST['default'],
-        ]
+        self._transform_order: list[Any] = [None for _ in range(5)]
 
     def reset_file_manager(self):
         """!
@@ -154,6 +135,7 @@ class Frame(object):
         self._manager.create_group('building', self.original_file_root / r'game\common\history\buildings')
         self._manager.create_group('definition', self.original_file_root / r'game\common\country_definitions')
         self._manager.create_group('effect', self.original_file_root / r'game\common\history\countries')
+        self._manager.create_group('map', self.original_file_root / r'game\map_data\state_regions')
 
         self._manager.collect_file('region', '.txt')
         self._manager.collect_file('state', '.txt')
@@ -161,6 +143,7 @@ class Frame(object):
         self._manager.collect_file('building', '.txt')
         self._manager.collect_file('definition', '.txt')
         self._manager.collect_file('effect', '.txt')
+        self._manager.collect_file('map', '.txt')
 
         self._manager.create_group('new_state', self.target_file_root / r'common\history\states')
         self._manager.create_group('new_population', self.target_file_root / r'common\history\pops')
@@ -180,7 +163,7 @@ class Frame(object):
     def cover_file_generator(self):
         """!
         @brief 生成覆盖文件
-        @details 为需要覆盖的文件组创建空的目标文件，确保转换器有文件可写入
+        @details 为需要覆盖的文件组创建空的覆盖文件
         @details 处理以下文件组：state → new_state, population → new_population, building → new_building
         """
         for old_group, new_group in self._cover_file_group.items():
@@ -376,6 +359,16 @@ class Frame(object):
         self._collect_order.append(COLLECT_LIST[name])
         self._exist_collect_name.add(name)
 
+    def preprocess(self):
+        if None in self._analysis_order:
+            raise ValueError(f'Analysis class cannot be None: {self._analysis_order}')
+
+        if None in self._modify_order:
+            raise ValueError(f'Modify class cannot be None: {self._modify_order}')
+
+        if None in self._transform_order:
+            raise ValueError(f'Transform class cannot be None: {self._transform_order}')
+
     def sort_collects_by_dependency(self):
         """对_collect_order中的collect进行拓扑排序，确保依赖项先执行"""
 
@@ -435,6 +428,11 @@ class Frame(object):
                  7. 英文翻译分析
                  8. 中文翻译分析
         """
+
+        map_analysis: MapAnalysis = MapAnalysis()
+        map_analysis.main(self._manager, 'map')
+        self._origin.map = map_analysis.map
+
         # 区域分析
         region_analysis: RegionAnalysisBase = self._analysis_order[0]()
         region_analysis.main(self._manager, 'region')
@@ -585,6 +583,8 @@ class Frame(object):
                  6. 数据填充：确保目标数据完整
                  7. 数据转换：生成最终游戏文件
         """
+        self.preprocess()
+
         self.analysis()
 
         self.sort_collects_by_dependency()
@@ -603,21 +603,40 @@ class Frame(object):
 if __name__ == '__main__':
     frame: Frame = Frame(Path(r'D:\application\Steam\steamapps\common\Victoria 3'), Path(r'C:\Users\User\Documents\Paradox Interactive\Victoria 3\mod\Alternate World'))
 
-    frame.set_modify(Modify.state, 'region_merge_country')
-    frame.set_args('max_merge_percent', 30)
+    frame.set_analysis(Analysis.region, 'default')
+    frame.set_analysis(Analysis.state, 'default')
+    frame.set_analysis(Analysis.population, 'default')
+    frame.set_analysis(Analysis.building, 'default')
+    frame.set_analysis(Analysis.definition, 'default')
+    frame.set_analysis(Analysis.effect, 'default')
+
+    frame.set_modify(Modify.state, 'region_adjacent_country')
+    frame.set_args('max_merge_percent', 35)
 
     frame.set_modify(Modify.building, 'empty')
 
-    frame.set_modify(Modify.population, 'merge')
+    frame.set_modify(Modify.population, 'generate')
+    frame.set_args('population_generate_function', DataGenerateType.randomize)
+    frame.set_args('population_random_range', (1000000, 10000000))
 
-    frame.set_modify(Modify.effect, 'randomize')
-    frame.set_args('enable_random_technology', True)
-    frame.set_args('random_technology_range', (6, 6))
-    frame.set_args('enable_random_law', True)
+    frame.set_modify(Modify.effect, 'generate')
+    frame.set_args('technology_generate_function', DataGenerateType.randomize)
+    frame.set_args('random_technology_range', (5, 6))
+    frame.set_args('laws_generate_function', DataGenerateType.randomize)
 
     frame.set_modify(Modify.definition, 'generate')
-    frame.set_args('enable_random_country_type', True)
-    frame.set_args('random_country_type_weight', [2, 5, 3])
-    frame.set_args('set_fix_country_type', 'recognized')
+    frame.set_args('country_type_generate_function', DataGenerateType.randomize)
+    frame.set_args('set_random_country_type_weight', [2, 6, 2])
+    frame.set_args('main_culture_generate_function', DataGenerateType.default)
+    frame.set_args('set_main_culture_max_number', 2)
+    frame.set_args('enable_named_from_capital', True)
+
+    frame.set_modify(Modify.tag, 'default')
+
+    frame.set_transform(Transform.state, 'default')
+    frame.set_transform(Transform.population, 'default')
+    frame.set_transform(Transform.building, 'default')
+    frame.set_transform(Transform.definition, 'default')
+    frame.set_transform(Transform.effect, 'default')
 
     frame.main()
