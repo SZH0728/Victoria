@@ -10,24 +10,20 @@
 from typing import Type
 
 from .base import DefinitionModifyBase
-from .default import DefinitionModifyDefault
 from .generate import DefinitionModifyGenerate
 
 __all__ = [
     'DefinitionModifyBase',
-    'DefinitionModifyDefault',
     'DefinitionModifyGenerate',
     'DEFINITION_MODIFY_LIST',
     'DEFINITION_MODIFY_DEPENDENCY',
 ]
 
 DEFINITION_MODIFY_LIST: dict[str, Type[DefinitionModifyBase]] = {
-    'default': DefinitionModifyDefault,
     'generate': DefinitionModifyGenerate,
 }
 
 DEFINITION_MODIFY_DEPENDENCY: dict[str, tuple[str, ...]] = {
-    'default': (),
     'generate': (),
 }
 
