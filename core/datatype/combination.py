@@ -8,6 +8,7 @@
 """
 
 from dataclasses import dataclass
+from enum import Enum
 
 from .map import Map
 from .building import StateBuilding
@@ -33,7 +34,14 @@ class DataCombination(object):
 
     english_translation: Map[str] | None = None               #!< 英文翻译映射
     chinese_translation: Map[str] | None = None               #!< 中文翻译映射
+    map: Map[int] | None = None
     tag: Map[str] | None = None                               #!< 标签映射（用于翻译更新）
+
+
+class DataGenerateType(Enum):
+    default = 0
+    randomize = 1
+    fix = 2
 
 
 if __name__ == '__main__':
