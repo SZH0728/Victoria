@@ -10,25 +10,25 @@
 from typing import Type
 
 from .base import PopulationModifyBase
-from .default import PopulationModifyDefault
 from .merge import PopulationModifyMerge
+from .generate import PopulationModifyGenerate
 
 __all__ = [
     'PopulationModifyBase',
-    'PopulationModifyDefault',
     'PopulationModifyMerge',
+    'PopulationModifyGenerate',
     'POPULATION_MODIFY_LIST',
     'POPULATION_MODIFY_DEPENDENCY',
 ]
 
 POPULATION_MODIFY_LIST: dict[str, Type[PopulationModifyBase]] = {
-    'default': PopulationModifyDefault,
     'merge': PopulationModifyMerge,
+    'generate': PopulationModifyGenerate,
 }
 
 POPULATION_MODIFY_DEPENDENCY: dict[str, tuple[str, ...]] = {
-    'default': (),
     'merge': ('population_merge',),
+    'generate': ('population_merge',),
 }
 
 if __name__ == '__main__':
