@@ -10,13 +10,11 @@
 from typing import Type
 
 from .base import EffectModifyBase
-from .default import EffectModifyDefault
 from .empty import EffectModifyEmpty
-from .randomize import EffectModifyRandomize
+from .generate import EffectModifyRandomize
 
 __all__ = [
     'EffectModifyBase',
-    'EffectModifyDefault',
     'EffectModifyEmpty',
     'EffectModifyRandomize',
     'EFFECT_MODIFY_LIST',
@@ -24,15 +22,13 @@ __all__ = [
 ]
 
 EFFECT_MODIFY_LIST: dict[str, Type[EffectModifyBase]] = {
-    'default': EffectModifyDefault,
     'empty': EffectModifyEmpty,
-    'randomize': EffectModifyRandomize,
+    'generate': EffectModifyRandomize,
 }
 
 EFFECT_MODIFY_DEPENDENCY: dict[str, tuple[str, ...]] = {
-    'default': (),
     'empty': (),
-    'randomize': (),
+    'generate': (),
 }
 
 if __name__ == '__main__':
