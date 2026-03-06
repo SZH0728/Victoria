@@ -41,14 +41,14 @@ class StatePlot(object):
 
 
 @dataclass
-class StateAdjacency(object):
-    """!
-    @brief 州相邻关系数据类
-    @details 记录一个州的所有相邻州，基于省份编号的临近性判断
-    """
-    state_name: str                     #!< 州名称
-    adjacent_states: list[str]          #!< 相邻州名称列表
+class StateInRegion(object):
+    state_id: int
+    state_name: str
+    region_name: str
+    provinces: list[str]
 
+    homeland: list[str]
+    claim: list[str]
 
 if __name__ == '__main__':
     pass
