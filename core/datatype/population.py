@@ -17,18 +17,10 @@ class PopulationItem(object):
     @brief 人口项数据类
     @details 表示一个人口群体的基本信息，包括数量、文化、宗教和人口类型
     """
-
     size: int                       #!< 人口数量
-    """@brief 人口数量"""
-
     culture: str | None             #!< 文化
-    """@brief 文化（可选）"""
-
     religion: str | None            #!< 宗教
-    """@brief 宗教（可选）"""
-
     pop_type: str | None            #!< 人口类型
-    """@brief 人口类型（可选）"""
 
 
 @dataclass(frozen=True)
@@ -37,9 +29,7 @@ class PopulationCountry(object):
     @brief 国家人口数据类
     @details 表示一个国家的人口列表
     """
-
     create_pop: tuple[PopulationItem, ...]  #!< 人口项列表
-    """@brief 人口项列表"""
 
     def __post_init__(self):
         """@brief 初始化后处理，确保create_pop为元组类型"""
@@ -53,9 +43,7 @@ class PopulationRegion(object):
     @brief 区域人口数据类
     @details 表示一个区域的人口数据，包含区域状态到国家人口的映射
     """
-
     population_country_dict: dict[RegionStatePrefix, PopulationCountry]  #!< 国家人口字典
-    """@brief 区域状态到国家人口的映射字典"""
 
 
 @dataclass(frozen=True)
@@ -64,12 +52,8 @@ class PopulationFile(object):
     @brief 人口文件数据容器
     @details 包含人口数据的根键和区域人口字典
     """
-
     root_key: str | None
-    """@brief 文件根键（可选）"""
-
     population_region_dict: dict[StateNamePrefix, PopulationRegion]
-    """@brief 州名称到区域人口的映射字典"""
 
 
 if __name__ == '__main__':

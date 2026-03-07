@@ -17,7 +17,6 @@ class StateCountryItem(object):
     @brief 州-国家项数据类
     @details 表示一个州与国家之间的关系，包含国家标签、所属省份和州类型信息
     """
-
     country: CountryTagPrefix           #!< 国家标签
     owned_provinces: tuple[str, ...]    #!< 所属省份ID列表
     state_type: str | None              #!< 州类型
@@ -34,7 +33,6 @@ class StateItem(object):
     @brief 州数据项
     @details 表示一个州的所有相关信息，包括国家所有权、本土文化和宣称文化
     """
-
     create_state: tuple[StateCountryItem, ...]    #!< 国家所有权列表（一个州可能有多个国家拥有）
     add_homeland: tuple[CultureNamePrefix, ...]   #!< 本土文化列表
     add_claim: tuple[CountryTagPrefix, ...]       #!< 宣称文化列表
@@ -55,12 +53,8 @@ class StateFile(object):
     @brief 州文件数据容器
     @details 包含州数据的根键和州项字典
     """
-
     root_key: str | None
-    """@brief 文件根键（可选）"""
-
     stat_item_dict: dict[StateNamePrefix, StateItem]
-    """@brief 州名称到州项的映射字典"""
 
 
 if __name__ == '__main__':
