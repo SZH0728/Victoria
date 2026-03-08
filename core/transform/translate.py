@@ -19,14 +19,16 @@ class TranslateTransform(TransformBase):
     @details 将翻译字典转换为游戏本地化文件格式
     """
 
-    def __init__(self):
+    def __init__(self, tag: dict[CountryTagPrefix, StateNamePrefix]):
         """
         @brief 初始化翻译转换类
-        @details 调用父类初始化方法，设置标签字典为None
+        @details 调用父类初始化方法，设置标签字典
+        @param tag 国家标签到州名称前缀的映射字典
         """
         super().__init__()
-        self.tag: dict[CountryTagPrefix, StateNamePrefix] | None = None
-        logger.debug(f"TranslateTransform initialized with tag=None")
+        self.tag: dict[CountryTagPrefix, StateNamePrefix] = tag
+        logger.debug(f"TranslateTransform initialized with tag dictionary")
+
     def transform(self, target: Any) -> Tree:
         """
         @brief 转换翻译数据
@@ -46,16 +48,15 @@ class TranslateTransform(TransformBase):
         """
         logger.info(f"Starting translation transformation for group '{group}' with {len(translation)} files")
 
-        if self.tag is None:
-            logger.error("tag 未初始化，无法进行翻译转换")
-            return
-
-        logger.debug(f"Tag dictionary has {len(self.tag)} entries")
-
         for filename, translate_dict in translation.items():
             logger.debug(f"Processing translation file: {filename}")
 
             filename_list: list[str] = filename.split('_')
+
+            if 'l' not in filename_list:
+                logger.error(f"Invalid filename format for translation file: {filename}")
+                continue
+
             filename_list: list[str] = filename_list[filename_list.index('l'):]
             headline: str = '_'.join(filename_list)
             logger.debug(f"Extracted headline: {headline}")
