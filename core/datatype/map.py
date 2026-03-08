@@ -56,7 +56,7 @@ class MapRegion(object):
 
         # 验证可耕地数量非负
         if self.arable_land < 0:
-            raise ValueError(f"可耕地数量必须为非负整数，当前值: {self.arable_land}")
+            raise ValueError(f"{self.__class__.__name__}: Arable land amount must be non-negative integer, got: {self.arable_land}")
 
 
 @dataclass(frozen=True)
