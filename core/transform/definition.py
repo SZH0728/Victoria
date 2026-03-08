@@ -55,9 +55,9 @@ class TransformDefinitionDefault(TransformBase):
             country_tree['is_named_from_capital'] = 'yes'
             logger.debug(f"Set is_named_from_capital: yes")
 
-        if definition_country.valid_as_home_country_for_separatists is not None:
-            country_tree['valid_as_home_country_for_separatists'] = definition_country.valid_as_home_country_for_separatists
-            logger.debug(f"Set valid_as_home_country_for_separatists: {definition_country.valid_as_home_country_for_separatists}")
+        if definition_country.valid_as_home_country_for_separatists is not None and definition_country.valid_as_home_country_for_separatists:
+            country_tree['valid_as_home_country_for_separatists'] = 'yes'
+            logger.debug(f"Set valid_as_home_country_for_separatists: yes")
 
         if definition_country.social_hierarchy is not None:
             country_tree['social_hierarchy'] = definition_country.social_hierarchy
