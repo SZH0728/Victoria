@@ -1,11 +1,6 @@
 # -*- coding:utf-8 -*-
 # AUTHOR: Sun
 
-"""
-@brief 区域数据定义模块
-@details 定义了维多利亚3游戏中战略区域相关的数据结构，包括区域信息、首府、颜色等
-"""
-
 from dataclasses import dataclass
 
 from core.datatype.prefix import RegionNamePrefix, StateNamePurePrefix
@@ -14,16 +9,18 @@ from core.datatype.prefix import RegionNamePrefix, StateNamePurePrefix
 @dataclass(frozen=True)
 class RegionItem(object):
     """
-    @brief 区域项数据类
-    @details 表示一个战略区域的所有相关信息，包括图形文化、首府、颜色和所属州
+    @brief 区域项目数据类
+    @details 表示游戏中的一个区域，包含图形文化、首府省份、地图颜色和包含的州
     """
-    graphical_culture: str | None                #!< 图形文化标识
-    capital_province: str | None                 #!< 首府省份ID
-    map_color: tuple[int | float, ...]           #!< 地图颜色RGB元组
-    states: tuple[StateNamePurePrefix, ...]      #!< 所属州ID列表
+    graphical_culture: str | None            # 图形文化
+    capital_province: str | None             # 首府省份
+    map_color: tuple[int | float, ...]       # 地图颜色
+    states: tuple[StateNamePurePrefix, ...]  # 包含的州列表
 
     def __post_init__(self):
-        """@brief 初始化后处理，确保所有字段都是元组类型"""
+        """
+        @brief 后初始化方法，确保列表类型属性转换为元组
+        """
         if isinstance(self.map_color, list):
             object.__setattr__(self, 'map_color', tuple(self.map_color))
         if isinstance(self.states, list):
@@ -33,11 +30,11 @@ class RegionItem(object):
 @dataclass(frozen=True)
 class RegionFile(object):
     """
-    @brief 区域文件数据容器
-    @details 包含区域数据的根键和区域项字典
+    @brief 区域文件数据类
+    @details 表示整个区域文件的数据结构，包含根键和区域项目字典
     """
-    root_key: str | None
-    region_item_dict: dict[RegionNamePrefix, RegionItem]
+    root_key: str | None                                   # 根键
+    region_item_dict: dict[RegionNamePrefix, RegionItem]   # 区域项目字典
 
 
 if __name__ == '__main__':
