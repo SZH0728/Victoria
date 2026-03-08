@@ -12,7 +12,7 @@ from core.file import FileManager
 logger = getLogger(__name__)
 
 
-class StaticMethodMixin(object):
+class TransformStaticMethodMixin(object):
     """
     @brief 静态工具方法混入类
     @details 提供静态辅助方法，用于数据处理和验证
@@ -34,19 +34,19 @@ class StaticMethodMixin(object):
         """
         @brief 创建树对象
         @details 创建一个根树对象和一个内部树对象，并返回它们
-        @param inner_key 内部树对象对应的键
-        @return 树对象
+        @param inner_key 内部树对象对应的键，如果为None则返回相同的根树和内部树
+        @return 元组 (根树对象, 内部树对象)，当inner_key为None时两者相同
         """
         root_tree = Tree()
 
-        if inner_key:
+        if inner_key is not None:
             root_tree[inner_key] = Tree()
             return root_tree, root_tree[inner_key]
         else:
             return root_tree, root_tree
 
 
-class TransformBase(StaticMethodMixin, ABC):
+class TransformBase(TransformStaticMethodMixin, ABC):
     """
     @brief 转换模块基类
     @details 所有数据转换类的抽象基类，提供文件处理框架和转换流程
