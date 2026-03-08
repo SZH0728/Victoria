@@ -3,11 +3,11 @@
 
 from dataclasses import dataclass
 
-from core.datatype.prefix import StateNamePurePrefix
+from core.datatype.prefix import StateNamePurePrefix, CountryTagPrefix
 
 
 @dataclass(frozen=True)
-class CountryDefinition(object):
+class DefinitionCountry(object):
     """
     @brief 国家定义数据类
     @details 表示游戏中的国家定义，包含颜色、类型、等级、文化、首都等信息
@@ -32,6 +32,16 @@ class CountryDefinition(object):
             object.__setattr__(self, 'color', tuple(self.color))
         if isinstance(self.cultures, list):
             object.__setattr__(self, 'cultures', tuple(self.cultures))
+
+
+@dataclass(frozen=True)
+class DefinitionFile(object):
+    """
+    @brief 国家定义文件数据类
+    @details 包含国家定义文件的根键和以国家标签为键的国家定义字典
+    """
+    root_key: str | None                                                # 根键
+    definition_country_dict: dict[CountryTagPrefix, DefinitionCountry]  # 国家定义字典，键为国家标签前缀
 
 
 if __name__ == '__main__':
