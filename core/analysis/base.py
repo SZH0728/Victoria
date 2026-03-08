@@ -136,7 +136,6 @@ class AnalysisBase(IgnoreFileMixin, StaticMethodMixin, ABC):
         """
         super().__init__()
         self.result: dict[str, Any] = {}
-        logger.debug(f"AnalysisBase initialized with empty result dict")
 
     @abstractmethod
     def analysis(self, filename: str, tree: Tree):
