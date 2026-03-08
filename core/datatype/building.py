@@ -126,6 +126,7 @@ class BuildingFile(object):
     @brief 建筑文件数据类
     @details 表示整个建筑文件的数据结构，包含州到州建筑信息的映射
     """
+    root_key: str | None
     building_state_dict: dict[StateNamePrefix, BuildingState]  # 州建筑字典
 
 
