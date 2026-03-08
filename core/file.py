@@ -76,7 +76,7 @@ class FileManager(object):
         if isinstance(path, Path):
             return [path]
 
-        # 处理可迭代对象输入（列表、元组等）
+        # 处理可迭代对象（列表、元组等）
         paths: list[Path] = []
         for p in path:
             # 检查元素类型并进行相应转换
