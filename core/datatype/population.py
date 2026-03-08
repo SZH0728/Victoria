@@ -22,7 +22,7 @@ class PopulationItem(object):
         @brief 后初始化方法，验证人口规模非负
         """
         if self.size < 0:
-            raise ValueError(f"人口规模必须为非负整数，当前值: {self.size}")
+            raise ValueError(f"{self.__class__.__name__}: Population size must be non-negative integer, got: {self.size}")
 
 
 @dataclass(frozen=True)
