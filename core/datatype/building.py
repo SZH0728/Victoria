@@ -20,7 +20,7 @@ class BuildingCountryOwnership(object):
         @brief 后初始化方法，验证建筑等级为正整数
         """
         if self.levels <= 0:
-            raise ValueError(f"建筑等级必须为正整数，当前值: {self.levels}")
+            raise ValueError(f"{self.__class__.__name__}: Building level must be a positive integer, got: {self.levels}")
 
 
 @dataclass(frozen=True)
@@ -39,7 +39,7 @@ class BuildingPrivateOwnership(object):
         @brief 后初始化方法，验证建筑等级为正整数
         """
         if self.levels <= 0:
-            raise ValueError(f"建筑等级必须为正整数，当前值: {self.levels}")
+            raise ValueError(f"{self.__class__.__name__}: Building level must be a positive integer, got: {self.levels}")
 
 
 @dataclass(frozen=True)
@@ -57,7 +57,7 @@ class BuildingCompanyOwnership(object):
         @brief 后初始化方法，验证建筑等级为正整数
         """
         if self.levels <= 0:
-            raise ValueError(f"建筑等级必须为正整数，当前值: {self.levels}")
+            raise ValueError(f"{self.__class__.__name__}: Building level must be a positive integer, got: {self.levels}")
 
 
 # 建筑所有权类型别名
