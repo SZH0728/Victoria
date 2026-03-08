@@ -57,7 +57,7 @@ class IgnoreFileMixin(object):
         logger.debug(f"Removed file '{filename}' from ignore list. Current ignore set: {self.ignore}")
 
 
-class StaticMethodMixin(object):
+class AnalysisStaticMethodMixin(object):
     """
     @brief 静态工具方法混入类
     @details 提供静态辅助方法，用于数据处理和验证
@@ -124,7 +124,7 @@ class StaticMethodMixin(object):
             logger.debug(f"Key '{key}' not found in dictionary, set to default value: {value}")
 
 
-class AnalysisBase(IgnoreFileMixin, StaticMethodMixin, ABC):
+class AnalysisBase(IgnoreFileMixin, AnalysisStaticMethodMixin, ABC):
     """
     @brief 分析模块基类
     @details 所有数据分析类的抽象基类，提供文件处理框架和分析流程
