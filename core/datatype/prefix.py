@@ -17,10 +17,10 @@ class BasePrefix(ABC):
         @note 只能提供其中一个参数，不能同时提供两个
         """
         if str_with_prefix is not None and str_without_prefix is not None:
-            raise ValueError("Cannot provide both str_with_prefix and str_without_prefix")
+            raise ValueError(f"{self.__class__.__name__}: Cannot provide both str_with_prefix and str_without_prefix")
 
         if str_with_prefix is None and str_without_prefix is None:
-            raise ValueError("Must provide either str_with_prefix or str_without_prefix")
+            raise ValueError(f"{self.__class__.__name__}: Must provide either str_with_prefix or str_without_prefix")
 
         self.original_string = str_without_prefix  # 原始字符串（不带前缀）
 
