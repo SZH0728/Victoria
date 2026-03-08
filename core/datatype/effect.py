@@ -26,7 +26,7 @@ class EffectCountry(object):
 
         # 验证特殊效果元组长度均为2（键值对）
         if self.special_effect and not all(len(pair) == 2 for pair in self.special_effect):
-            raise ValueError("特殊效果列表中的每个元素必须为长度为2的元组（键值对）")
+            raise ValueError(f"{self.__class__.__name__}: Each element in special_effect list must be a tuple of length 2 (key-value pair)")
 
 
 @dataclass(frozen=True)
