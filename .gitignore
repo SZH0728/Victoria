@@ -153,3 +153,4 @@ cython_debug/
 
 .claude
 core-ignore
+.CLAUDE.md
