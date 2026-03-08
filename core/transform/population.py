@@ -47,8 +47,7 @@ class TransformPopulationDefault(TransformBase):
         logger.debug(f"Population item transformation completed")
         return tree
 
-    @staticmethod
-    def transform_country_population(population_country: PopulationCountry) -> Tree:
+    def transform_country_population(self, population_country: PopulationCountry) -> Tree:
         """
         @brief 转换国家人口数据
         @details 将PopulationCountry对象转换为pyradox Tree对象
@@ -60,7 +59,7 @@ class TransformPopulationDefault(TransformBase):
 
         for population_item in population_country.create_pop:
             logger.debug(f"Processing population item: {population_item}")
-            tree.append('create_pop', TransformPopulationDefault.transform_population_item(population_item))
+            tree.append('create_pop', self.transform_population_item(population_item))
 
         logger.debug(f"Country population transformation completed, total pops: {len(population_country.create_pop)}")
         return tree
