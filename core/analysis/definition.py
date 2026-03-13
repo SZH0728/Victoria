@@ -7,7 +7,7 @@ from logging import getLogger
 from pyradox import Tree
 
 from core.datatype.prefix import CountryTagPrefix
-from core.datatype.definition import DefinitionCountry, DefinitionFile
+from core.datatype.source.definition import DefinitionCountry, DefinitionFile
 from core.analysis.base import AnalysisBase
 
 logger = getLogger(__name__)
