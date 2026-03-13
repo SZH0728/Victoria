@@ -5,7 +5,7 @@ from logging import getLogger
 
 from pyradox import Tree
 
-from core.datatype.region import RegionFile, RegionItem
+from core.datatype.source.region import RegionFile, RegionItem
 from core.transform.base import TransformBase
 
 logger = getLogger(__name__)
