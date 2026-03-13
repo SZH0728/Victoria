@@ -7,7 +7,7 @@ from logging import getLogger
 from pyradox import Tree
 
 from core.datatype.prefix import CountryTagPrefix, StateNamePrefix, RegionStatePrefix, StateNamePurePrefix
-from core.datatype.building import BuildingFile, BuildingState, BuildingCountry, BuildingItem, BuildingCountryOwnership, BuildingPrivateOwnership, BuildingCompanyOwnership, BuildingNoOwnerItem
+from core.datatype.source.building import BuildingFile, BuildingState, BuildingCountry, BuildingItem, BuildingCountryOwnership, BuildingPrivateOwnership, BuildingCompanyOwnership, BuildingNoOwnerItem, BuildingOwnership
 from core.analysis.base import AnalysisBase
 
 logger = getLogger(__name__)
@@ -111,14 +111,14 @@ class AnalysisBuildingDefault(AnalysisBase):
         logger.debug(f"Building company ownership analysis completed")
         return BuildingCompanyOwnership(**result)
 
-    def analysis_building_ownership(self, tree: Tree) -> list[BuildingCountryOwnership|BuildingPrivateOwnership|BuildingCompanyOwnership]:
+    def analysis_building_ownership(self, tree: Tree) -> list[BuildingOwnership]:
         """
         @brief 分析建筑所有权数据
         @details 从Tree对象中提取所有类型的建筑所有权信息，包括国家、私人和公司所有权
         @param tree 包含建筑所有权数据的Tree对象
         @return 解析后的所有权对象列表
         """
-        result: list[BuildingCountryOwnership|BuildingPrivateOwnership|BuildingCompanyOwnership] = []
+        result: list[BuildingOwnership] = []
         logger.debug(f"Starting analysis of building ownership")
 
         for key, value in tree.items():
