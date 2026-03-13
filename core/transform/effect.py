@@ -5,7 +5,7 @@ from logging import getLogger
 
 from pyradox import Tree
 
-from core.datatype.effect import EffectFile, EffectCountry
+from core.datatype.source.effect import EffectFile, EffectCountry
 from core.transform.base import TransformBase
 
 logger = getLogger(__name__)
