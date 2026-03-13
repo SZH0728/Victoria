@@ -5,7 +5,7 @@ from logging import getLogger
 
 from pyradox import Tree
 
-from core.datatype.map import MapFile, MapRegion, MapResource
+from core.datatype.source.map import MapFile, MapRegion, MapResource
 from core.transform.base import TransformBase
 
 logger = getLogger(__name__)
