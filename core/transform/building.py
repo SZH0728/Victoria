@@ -1,12 +1,11 @@
 # -*- coding:utf-8 -*-
 # AUTHOR: Sun
 
-from typing import Any
 from logging import getLogger
 
 from pyradox import Tree
 
-from core.datatype.building import BuildingFile, BuildingState, BuildingCountry, BuildingItem, BuildingNoOwnerItem, BuildingCountryOwnership, BuildingPrivateOwnership, BuildingCompanyOwnership
+from core.datatype.source.building import BuildingFile, BuildingState, BuildingCountry, BuildingItem, BuildingNoOwnerItem, BuildingCountryOwnership, BuildingPrivateOwnership, BuildingCompanyOwnership, BuildingOwnership
 from core.transform.base import TransformBase
 
 logger = getLogger(__name__)
@@ -86,7 +85,7 @@ class TransformBuildingDefault(TransformBase):
         logger.debug(f"Company ownership transformation completed")
         return tree
 
-    def transform_ownership_list(self, ownerships: tuple[BuildingCountryOwnership | BuildingPrivateOwnership | BuildingCompanyOwnership, ...]) -> Tree:
+    def transform_ownership_list(self, ownerships: tuple[BuildingOwnership, ...]) -> Tree:
         """
         @brief 转换所有权列表数据
         @details 将所有权元组转换为pyradox Tree对象，根据所有权类型分配到不同键下
