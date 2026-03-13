@@ -4,10 +4,10 @@
 from typing import Any
 from logging import getLogger
 
-from pyradox import Tree, parse
+from pyradox import Tree
 
 from core.datatype.prefix import CountryTagPrefix
-from core.datatype.effect import EffectFile, EffectCountry
+from core.datatype.source.effect import EffectFile, EffectCountry
 from core.analysis.base import AnalysisBase
 
 logger = getLogger(__name__)
