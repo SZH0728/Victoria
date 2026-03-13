@@ -13,7 +13,7 @@ from core.transform.base import TransformBase
 logger = getLogger(__name__)
 
 
-class TranslateTransform(TransformBase):
+class TransformTranslationDefault(TransformBase):
     """
     @brief 翻译数据转换类
     @details 将翻译字典转换为游戏本地化文件格式
@@ -27,7 +27,7 @@ class TranslateTransform(TransformBase):
         """
         super().__init__()
         self.tag: dict[CountryTagPrefix, StateNamePrefix] = tag
-        logger.debug(f"TranslateTransform initialized with tag dictionary")
+        logger.debug(f"TransformTranslationDefault initialized with tag dictionary")
 
     def transform(self, target: Any) -> Tree:
         """
@@ -36,7 +36,7 @@ class TranslateTransform(TransformBase):
         @param target 目标数据
         @throws NotImplementedError 此方法未实现，使用main方法替代
         """
-        raise NotImplementedError("transform method not implemented for TranslateTransform, use main method instead")
+        raise NotImplementedError("transform method not implemented for TransformTranslationDefault, use main method instead")
 
     def main(self, manager: FileManager, group: str, translation: dict[str, dict[str, str]]):
         """
