@@ -7,7 +7,7 @@ from logging import getLogger
 from pyradox import Tree
 
 from core.datatype.prefix import StateNamePurePrefix
-from core.datatype.map import MapFile, MapRegion, MapResource
+from core.datatype.source.map import MapFile, MapRegion, MapResource
 from core.analysis.base import AnalysisBase
 
 logger = getLogger(__name__)
