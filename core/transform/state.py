@@ -1,12 +1,11 @@
 # -*- coding:utf-8 -*-
 # AUTHOR: Sun
 
-from typing import Any
 from logging import getLogger
 
 from pyradox import Tree
 
-from core.datatype.state import StateFile, StateItem, StateCountryItem
+from core.datatype.source.state import StateFile, StateItem, StateCountryItem
 from core.transform.base import TransformBase
 
 logger = getLogger(__name__)
