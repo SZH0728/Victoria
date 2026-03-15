@@ -64,8 +64,8 @@ class TransformPopulationDefault(TransformBase):
         logger.debug(f"Country population transformation completed, total pops: {len(population_country.create_pop)}")
         return tree
 
-    @staticmethod
-    def transform_population_region(population_region: PopulationRegion) -> Tree:
+
+    def transform_population_region(self, population_region: PopulationRegion) -> Tree:
         """
         @brief 转换人口区域数据
         @details 将PopulationRegion对象转换为pyradox Tree对象
@@ -77,7 +77,7 @@ class TransformPopulationDefault(TransformBase):
 
         for region_state_prefix, country_population in population_region.population_country_dict.items():
             logger.debug(f"Processing country population for region: {region_state_prefix.prefix_string}")
-            tree[region_state_prefix.prefix_string] = TransformPopulationDefault.transform_country_population(country_population)
+            tree[region_state_prefix.prefix_string] = self.transform_country_population(country_population)
 
         logger.debug(f"Population region transformation completed, total regions: {len(population_region.population_country_dict)}")
         return tree

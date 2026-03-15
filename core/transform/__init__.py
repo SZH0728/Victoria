@@ -14,15 +14,15 @@ from .state import TransformStateDefault
 from .translate import TransformTranslationDefault
 
 
-TRANSFORM_REGISTER: dict[str, tuple[int, Type[TransformBase]]] = {
-    "TransformRegionDefault": (1000, TransformRegionDefault),
-    "TransformMapDefault": (2000, TransformMapDefault),
-    "TransformStateDefault": (3000, TransformStateDefault),
-    "TransformPopulationDefault": (4000, TransformPopulationDefault),
-    "TransformBuildingDefault": (5000, TransformBuildingDefault),
-    "TransformEffectDefault": (6000, TransformEffectDefault),
-    "TransformDefinitionDefault": (7000, TransformDefinitionDefault),
-    "TransformTranslationDefault": (8000, TransformTranslationDefault)
+TRANSFORM_REGISTER: dict[str, Type[TransformBase]] = {
+    "TransformRegionDefault": TransformRegionDefault,
+    "TransformMapDefault": TransformMapDefault,
+    "TransformStateDefault": TransformStateDefault,
+    "TransformPopulationDefault": TransformPopulationDefault,
+    "TransformBuildingDefault": TransformBuildingDefault,
+    "TransformEffectDefault": TransformEffectDefault,
+    "TransformDefinitionDefault": TransformDefinitionDefault,
+    "TransformTranslationDefault": TransformTranslationDefault,
 }
 
 

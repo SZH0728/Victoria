@@ -14,26 +14,15 @@ from .state import AnalysisStateDefault
 from .translate import AnalysisTranslationDefault
 
 
-ANALYSIS_REGISTER: dict[str, tuple[int, Type[AnalysisBase]]] = {
-    "AnalysisRegionDefault": (1000, AnalysisRegionDefault),
-    "AnalysisMapDefault": (2000, AnalysisMapDefault),
-    "AnalysisStateDefault": (3000, AnalysisStateDefault),
-    "AnalysisPopulationDefault": (4000, AnalysisPopulationDefault),
-    "AnalysisBuildingDefault": (5000, AnalysisBuildingDefault),
-    "AnalysisEffectDefault": (6000, AnalysisEffectDefault),
-    "AnalysisDefinitionDefault": (7000, AnalysisDefinitionDefault),
-    "AnalysisTranslationDefault": (8000, AnalysisTranslationDefault)
-}
-
-ANALYSIS_GROUP_NAME: dict[Type[AnalysisBase], str] = {
-    AnalysisRegionDefault: "region",
-    AnalysisMapDefault: "map",
-    AnalysisStateDefault: "state",
-    AnalysisPopulationDefault: "population",
-    AnalysisBuildingDefault: "building",
-    AnalysisEffectDefault: "effect",
-    AnalysisDefinitionDefault: "definition",
-    AnalysisTranslationDefault: "translation"
+ANALYSIS_REGISTER: dict[str, Type[AnalysisBase]] = {
+    "AnalysisRegionDefault": AnalysisRegionDefault,
+    "AnalysisMapDefault": AnalysisMapDefault,
+    "AnalysisStateDefault": AnalysisStateDefault,
+    "AnalysisPopulationDefault": AnalysisPopulationDefault,
+    "AnalysisBuildingDefault": AnalysisBuildingDefault,
+    "AnalysisEffectDefault": AnalysisEffectDefault,
+    "AnalysisDefinitionDefault": AnalysisDefinitionDefault,
+    "AnalysisTranslationDefault": AnalysisTranslationDefault,
 }
 
 
