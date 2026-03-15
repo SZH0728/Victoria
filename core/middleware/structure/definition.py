@@ -11,7 +11,7 @@ from core.middleware.base import StructureBase
 logger = getLogger(__name__)
 
 
-class StructureDefinition(StructureBase):
+class StructureDefinitionDefault(StructureBase):
     """
     @brief 国家定义数据结构化转换类
     @details 将DefinitionFile字典转换为结构化数据字典

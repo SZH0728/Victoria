@@ -11,7 +11,7 @@ from core.middleware.base import StructureBase
 logger = getLogger(__name__)
 
 
-class StructureBuilding(StructureBase):
+class StructureBuildingDefault(StructureBase):
     """
     @brief 建筑数据结构化转换类
     @details 将BuildingFile字典转换为以国家为键的结构化数据字典

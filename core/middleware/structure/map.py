@@ -12,7 +12,7 @@ from core.middleware.base import StructureBase
 logger = getLogger(__name__)
 
 
-class StructureMap(StructureBase):
+class StructureMapDefault(StructureBase):
     """
     @brief 地图数据结构化转换类
     @details 将MapFile字典转换为结构化数据字典

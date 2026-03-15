@@ -12,7 +12,7 @@ from core.middleware.base import DestructureBase
 logger = getLogger(__name__)
 
 
-class DestructureMap(DestructureBase):
+class DestructureMapDefault(DestructureBase):
     """
     @brief 地图数据解构转换类
     @details 将结构化地图数据字典转换回MapFile字典

@@ -12,7 +12,7 @@ from core.middleware.base import DestructureBase
 logger = getLogger(__name__)
 
 
-class DestructurePopulation(DestructureBase):
+class DestructurePopulationDefault(DestructureBase):
     """
     @brief 人口数据解构转换类
     @details 将以区域状态为键的结构化数据字典转换回PopulationFile字典

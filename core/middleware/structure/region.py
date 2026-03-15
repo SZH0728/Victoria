@@ -12,7 +12,7 @@ from core.middleware.base import StructureBase
 logger = getLogger(__name__)
 
 
-class StructureRegion(StructureBase):
+class StructureRegionDefault(StructureBase):
     """
     @brief 区域数据结构化转换类
     @details 将RegionFile字典转换为结构化数据字典

@@ -11,7 +11,7 @@ from core.middleware.base import DestructureBase
 logger = getLogger(__name__)
 
 
-class DestructureRegion(DestructureBase):
+class DestructureRegionDefault(DestructureBase):
     """
     @brief 区域数据解构转换类
     @details 将结构化区域数据字典转换回RegionFile字典

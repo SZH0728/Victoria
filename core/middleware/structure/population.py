@@ -12,7 +12,7 @@ from core.middleware.base import StructureBase
 logger = getLogger(__name__)
 
 
-class StructurePopulation(StructureBase):
+class StructurePopulationDefault(StructureBase):
     """
     @brief 人口数据结构化转换类
     @details 将PopulationFile字典转换为以国家为键的结构化数据字典

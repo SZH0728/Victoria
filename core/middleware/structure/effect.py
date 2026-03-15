@@ -11,7 +11,7 @@ from core.middleware.base import StructureBase
 logger = getLogger(__name__)
 
 
-class StructureEffect(StructureBase):
+class StructureEffectDefault(StructureBase):
     """
     @brief 效果数据结构化转换类
     @details 将EffectFile字典转换为结构化数据字典

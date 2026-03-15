@@ -11,7 +11,7 @@ from core.middleware.base import DestructureBase
 logger = getLogger(__name__)
 
 
-class DestructureDefinition(DestructureBase):
+class DestructureDefinitionDefault(DestructureBase):
     """
     @brief 国家定义数据解构转换类
     @details 将结构化国家定义数据字典转换回DefinitionFile字典

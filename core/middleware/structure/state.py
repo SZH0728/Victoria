@@ -13,7 +13,7 @@ from core.middleware.base import StructureBase
 logger = getLogger(__name__)
 
 
-class StructureState(StructureBase):
+class StructureStateDefault(StructureBase):
     """
     @brief 州数据结构化转换类
     @details 将StateFile字典转换为以国家为键的结构化数据字典

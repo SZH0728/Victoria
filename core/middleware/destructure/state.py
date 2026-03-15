@@ -12,7 +12,7 @@ from core.middleware.base import DestructureBase
 logger = getLogger(__name__)
 
 
-class DestructureState(DestructureBase):
+class DestructureStateDefault(DestructureBase):
     """
     @brief 州数据解构转换类
     @details 将以国家为键的结构化数据字典转换回StateFile字典

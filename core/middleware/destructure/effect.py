@@ -11,7 +11,7 @@ from core.middleware.base import DestructureBase
 logger = getLogger(__name__)
 
 
-class DestructureEffect(DestructureBase):
+class DestructureEffectDefault(DestructureBase):
     """
     @brief 效果数据解构转换类
     @details 将结构化效果数据字典转换回EffectFile字典
