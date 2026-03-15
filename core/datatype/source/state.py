@@ -52,7 +52,7 @@ class StateFile(object):
     @brief 州文件数据类
     @details 表示整个州文件的数据结构，包含根键和州项目字典
     """
-    root_key: str | None                               # 根键
+    root_key: str | None                                # 根键
     state_item_dict: dict[StateNamePrefix, StateItem]   # 州项目字典
 
 
